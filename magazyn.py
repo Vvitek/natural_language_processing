@@ -4,23 +4,23 @@ tokens = (
         'CMD',
         'NUMBER',
         'SIZE',
-        'KIND',
+        'KIND'
 )
 
 t_SIZE = r'mał(e|ych)'
 t_KIND = r'niezbędnik(i|ów)'
-t_CMD  = r'(D|d)ostarczono|(W|w)ydano'
+
+def t_CMD(t):
+    r'(D|d)ostarczono|(W|w)ydano'
+    t.value = t.value.lower()
+    return(t)
 
 def t_NUMBER(t):
     r'\d+|dwa|pięć'
-    try:
-        t.value = int(t.value)
-    except:
-        if t == 'dwa':
-            t = int(2)
-        elif t == 'pięć':
-            t.value = int(5)
-        return t
+    if t.value == 'dwa':
+        t.value = '2' 
+    elif t.value == 'pięć':
+        t.value = '5'
     return t
 
 def t_newline(t):
