@@ -1,5 +1,20 @@
 from urllib.request import urlopen
-from re import findall
+from bs4 import BeautifulSoup
 
-for rok in range(2008,2016):
-    print(urlopen("https://pl.wikipedia.org/wiki/Ekstraklasa_w_pi%%C5%%82ce_no%%C5%%BCnej_(2016/2017)" %rok ))
+final_table = {}
+
+for r in range(2008,2016):
+    soup = BeautifulSoup(urlopen("https://en.wikipedia.org/wiki/{}-{}_Ekstraklasa".format(r, str(r-1999).zfill(2))).read())
+    table = soup.find("span", id="League_table").parent.find_next_sibling("table")
+    for row in table.find_all("tr",table):
+        try:
+            if(len(row.find_all("td")) > 9):
+                punkty = int(row.find_all("td")[9].find("b").string)
+            elif(len(row.find_all("td")) > 8):
+                punkty = int(row.find_all("td")[8].string)
+            final_table[row.find("a").string] +=punkty 
+        except KeyError:
+            final_table[row.find("a").string] = punkty 
+        except:
+            continue
+print(final_table)
